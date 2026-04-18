@@ -13,9 +13,9 @@ export default function ProductCard({ result }: Props) {
       href={result.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex flex-col cursor-pointer"
+      className="group flex flex-col cursor-pointer border border-neutral-200 rounded-md overflow-hidden hover:border-neutral-400 transition-colors duration-150"
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-neutral-100 rounded-sm">
+      <div className="relative aspect-[3/4] overflow-hidden bg-neutral-100">
         <Image
           src={result.image}
           alt={result.title}
@@ -37,7 +37,7 @@ export default function ProductCard({ result }: Props) {
           {result.store}
         </span>
       </div>
-      <div className="pt-3 pb-1 px-0.5">
+      <div className="pt-3 pb-3 px-3">
         <h3 className="text-sm text-neutral-900 font-medium leading-snug line-clamp-2 group-hover:text-neutral-500 transition-colors duration-150">
           {result.title}
         </h3>
