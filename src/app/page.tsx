@@ -88,7 +88,7 @@ export default function Home() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Hero */}
-        <section className="py-16 sm:py-24 text-center">
+        <section className="pt-10 pb-6 text-center">
           <p className="text-xs uppercase tracking-[0.25em] text-neutral-400 mb-5">
             Search across 10 fashion brands
           </p>

@@ -20,3 +20,10 @@ body {
 .font-serif {
   font-family: var(--font-serif);
 }
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

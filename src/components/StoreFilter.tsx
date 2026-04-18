@@ -16,7 +16,7 @@ export default function StoreFilter({ selected, onChange }: Props) {
     : STORES;
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex items-center gap-2 overflow-x-auto scrollbar-none" style={{ WebkitOverflowScrolling: 'touch' }}>
       {/* Store search input */}
       <div className="relative flex items-center">
         <span className="absolute left-3 text-neutral-400 pointer-events-none">
@@ -46,7 +46,7 @@ export default function StoreFilter({ selected, onChange }: Props) {
 
       <button
         onClick={() => onChange('')}
-        className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 ${
+        className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 ${
           selected === ''
             ? 'bg-neutral-900 text-white border-neutral-900'
             : 'bg-white text-neutral-600 border-neutral-200 hover:border-neutral-400 hover:text-neutral-900'
@@ -59,7 +59,7 @@ export default function StoreFilter({ selected, onChange }: Props) {
         <button
           key={store.domain}
           onClick={() => onChange(store.domain)}
-          className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 ${
+          className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 ${
             selected === store.domain
               ? 'bg-neutral-900 text-white border-neutral-900'
               : 'bg-white text-neutral-600 border-neutral-200 hover:border-neutral-400 hover:text-neutral-900'
