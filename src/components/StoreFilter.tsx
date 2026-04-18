@@ -16,9 +16,9 @@ export default function StoreFilter({ selected, onChange }: Props) {
     : STORES;
 
   return (
-    <div className="flex items-center gap-2 overflow-x-auto scrollbar-none" style={{ WebkitOverflowScrolling: 'touch' }}>
-      {/* Store search input */}
-      <div className="relative flex items-center">
+    <div className="flex flex-col gap-2 w-full min-w-0">
+      {/* Search input — always full width, never scrolls with pills */}
+      <div className="relative flex items-center self-start">
         <span className="absolute left-3 text-neutral-400 pointer-events-none">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="8" />
@@ -30,7 +30,7 @@ export default function StoreFilter({ selected, onChange }: Props) {
           value={storeSearch}
           onChange={(e) => setStoreSearch(e.target.value)}
           placeholder="Find a store…"
-          className="pl-8 pr-3 py-1.5 text-sm bg-white border border-neutral-200 rounded-full focus:outline-none focus:border-neutral-400 w-36 placeholder:text-neutral-400"
+          className="pl-8 pr-7 py-1.5 text-sm bg-neutral-50 border border-neutral-200 rounded-full focus:outline-none focus:border-neutral-400 w-36 placeholder:text-neutral-400"
         />
         {storeSearch && (
           <button
@@ -44,34 +44,40 @@ export default function StoreFilter({ selected, onChange }: Props) {
         )}
       </div>
 
-      <button
-        onClick={() => onChange('')}
-        className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 ${
-          selected === ''
-            ? 'bg-neutral-900 text-white border-neutral-900'
-            : 'bg-white text-neutral-600 border-neutral-200 hover:border-neutral-400 hover:text-neutral-900'
-        }`}
+      {/* Scrollable pill row */}
+      <div
+        className="flex items-center gap-2 overflow-x-auto scrollbar-none"
+        style={{ WebkitOverflowScrolling: 'touch' }}
       >
-        All Stores
-      </button>
-
-      {visibleStores.map((store) => (
         <button
-          key={store.domain}
-          onClick={() => onChange(store.domain)}
+          onClick={() => onChange('')}
           className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 ${
-            selected === store.domain
+            selected === ''
               ? 'bg-neutral-900 text-white border-neutral-900'
               : 'bg-white text-neutral-600 border-neutral-200 hover:border-neutral-400 hover:text-neutral-900'
           }`}
         >
-          {store.name}
+          All Stores
         </button>
-      ))}
 
-      {visibleStores.length === 0 && (
-        <span className="text-sm text-neutral-400">No stores match &ldquo;{storeSearch}&rdquo;</span>
-      )}
+        {visibleStores.map((store) => (
+          <button
+            key={store.domain}
+            onClick={() => onChange(store.domain)}
+            className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 ${
+              selected === store.domain
+                ? 'bg-neutral-900 text-white border-neutral-900'
+                : 'bg-white text-neutral-600 border-neutral-200 hover:border-neutral-400 hover:text-neutral-900'
+            }`}
+          >
+            {store.name}
+          </button>
+        ))}
+
+        {visibleStores.length === 0 && (
+          <span className="text-sm text-neutral-400 shrink-0">No stores match &ldquo;{storeSearch}&rdquo;</span>
+        )}
+      </div>
     </div>
   );
 }

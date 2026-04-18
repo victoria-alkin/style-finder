@@ -105,12 +105,14 @@ export default function Home() {
         {(status === 'done' || status === 'loading') && (
           <section className="pb-8">
             <div className="border border-neutral-200 rounded-xl bg-white divide-y divide-neutral-100">
-              <div className="flex items-start gap-4 px-4 py-3">
-                <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400 pt-1.5 w-12 shrink-0">Store</span>
-                <StoreFilter selected={storeFilter} onChange={setStoreFilter} />
+              <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 px-4 py-3 min-w-0">
+                <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400 sm:pt-2 sm:w-12 shrink-0">Store</span>
+                <div className="min-w-0 flex-1">
+                  <StoreFilter selected={storeFilter} onChange={setStoreFilter} />
+                </div>
               </div>
-              <div className="flex items-center gap-4 px-4 py-3">
-                <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400 w-12 shrink-0">Price</span>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 px-4 py-3">
+                <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400 sm:w-12 shrink-0">Price</span>
                 <PriceFilter maxPrice={maxPrice} onChange={setMaxPrice} />
               </div>
             </div>
