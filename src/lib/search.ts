@@ -45,31 +45,23 @@ const SYNONYMS: Record<string, string[]> = {
   cocktail: ['party', 'semi-formal'],
 };
 
-function expandQuery(tokens: string[]): string[] {
-  const expanded = new Set(tokens);
-  for (const token of tokens) {
-    const synonyms = SYNONYMS[token];
-    if (synonyms) synonyms.forEach((s) => expanded.add(s));
-  }
-  return Array.from(expanded);
+function tokenTerms(token: string): string[] {
+  return [token, ...(SYNONYMS[token] ?? [])];
 }
 
-function scoreProduct(product: ShopifyProduct, tokens: string[]): number {
-  const title = product.title.toLowerCase();
-  const type = product.product_type.toLowerCase();
-  const tags = (Array.isArray(product.tags) ? product.tags.join(' ') : product.tags ?? '').toLowerCase();
-  const vendor = product.vendor.toLowerCase();
-  const variantTitles = product.variants.map((v) => v.title.toLowerCase()).join(' ');
+function wordSet(text: string): Set<string> {
+  return new Set(text.split(/[\s,\-\/\+&]+/).map((w) => w.replace(/[^a-z0-9]/g, '')).filter(Boolean));
+}
 
-  let score = 0;
-  for (const token of tokens) {
-    if (title.includes(token)) score += 4;
-    else if (type.includes(token)) score += 3;
-    else if (tags.includes(token)) score += 2;
-    else if (variantTitles.includes(token)) score += 1;
-    else if (vendor.includes(token)) score += 1;
+function matchToken(token: string, fields: { titleWords: Set<string>; typeWords: Set<string>; tagWords: Set<string>; variantWords: Set<string>; vendorWords: Set<string> }): number {
+  for (const term of tokenTerms(token)) {
+    if (fields.titleWords.has(term)) return 4;
+    if (fields.typeWords.has(term)) return 3;
+    if (fields.tagWords.has(term)) return 2;
+    if (fields.variantWords.has(term)) return 1;
+    if (fields.vendorWords.has(term)) return 1;
   }
-  return score;
+  return 0;
 }
 
 export function searchProducts(
@@ -83,13 +75,11 @@ export function searchProducts(
     ? entries.filter((e) => e.store.domain === storeFilter)
     : entries;
 
-  const rawTokens = query
+  const tokens = query
     .toLowerCase()
     .split(/\s+/)
     .map((t) => t.replace(/[^a-z0-9-]/g, ''))
     .filter((t) => t.length > 1 && !STOP_WORDS.has(t));
-
-  const tokens = expandQuery(rawTokens);
 
   const results: (SearchResult & { score: number })[] = [];
 
@@ -100,8 +90,32 @@ export function searchProducts(
     if (minPrice !== undefined && price < minPrice) continue;
     if (!product.images.length) continue;
 
-    const score = tokens.length > 0 ? scoreProduct(product, tokens) : 1;
-    if (tokens.length > 0 && score === 0) continue;
+    if (tokens.length === 0) {
+      results.push({ id: `${store.domain}-${product.id}`, title: product.title, store: store.name, storeDomain: store.domain, price, image: product.images[0].src, url: `https://${store.domain}/products/${product.handle}`, productType: product.product_type, tags: product.tags ?? [], score: 1 });
+      continue;
+    }
+
+    const fields = {
+      titleWords: wordSet(product.title.toLowerCase()),
+      typeWords: wordSet(product.product_type.toLowerCase()),
+      tagWords: wordSet((product.tags ?? []).join(' ').toLowerCase()),
+      variantWords: wordSet(product.variants.map((v) => v.title.toLowerCase()).join(' ')),
+      vendorWords: wordSet(product.vendor.toLowerCase()),
+    };
+
+    let totalScore = 0;
+    let allMatched = true;
+
+    for (const token of tokens) {
+      const tokenScore = matchToken(token, fields);
+      if (tokenScore === 0) {
+        allMatched = false;
+        break;
+      }
+      totalScore += tokenScore;
+    }
+
+    if (!allMatched) continue;
 
     results.push({
       id: `${store.domain}-${product.id}`,
@@ -113,7 +127,7 @@ export function searchProducts(
       url: `https://${store.domain}/products/${product.handle}`,
       productType: product.product_type,
       tags: product.tags ?? [],
-      score,
+      score: totalScore,
     });
   }
 
