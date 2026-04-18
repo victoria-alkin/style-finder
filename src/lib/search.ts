@@ -112,7 +112,7 @@ export function searchProducts(
       image: product.images[0].src,
       url: `https://${store.domain}/products/${product.handle}`,
       productType: product.product_type,
-      tags: Array.isArray(product.tags) ? product.tags : (product.tags ?? '').split(',').map((t) => t.trim()).filter(Boolean),
+      tags: product.tags ?? [],
       score,
     });
   }
