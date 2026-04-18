@@ -57,6 +57,14 @@ export default function Home() {
     runSearch(q, storeFilter, maxPrice);
   }
 
+  function handleClear() {
+    setQuery('');
+    setResults([]);
+    setStatus('idle');
+    setStoreFilter('');
+    setMaxPrice('');
+  }
+
   return (
     <div className="min-h-screen bg-[#fafafa]">
       {/* Header */}
@@ -90,7 +98,7 @@ export default function Home() {
           <p className="text-neutral-500 text-base mb-12 max-w-sm mx-auto leading-relaxed">
             Describe it in your own words — color, silhouette, occasion, vibe.
           </p>
-          <SearchBar onSearch={handleSearch} initialValue={query} />
+          <SearchBar onSearch={handleSearch} onClear={handleClear} initialValue={query} />
         </section>
 
         {/* Filters */}

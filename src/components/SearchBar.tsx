@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, FormEvent } from 'react';
 
 interface Props {
   onSearch: (query: string) => void;
+  onClear?: () => void;
   initialValue?: string;
 }
 
@@ -18,7 +19,7 @@ const SUGGESTIONS = [
   'ruched cocktail dress',
 ];
 
-export default function SearchBar({ onSearch, initialValue = '' }: Props) {
+export default function SearchBar({ onSearch, onClear, initialValue = '' }: Props) {
   const [value, setValue] = useState(initialValue);
   const [placeholder, setPlaceholder] = useState('');
   const [suggestionIndex, setSuggestionIndex] = useState(0);
@@ -62,6 +63,12 @@ export default function SearchBar({ onSearch, initialValue = '' }: Props) {
     if (value.trim()) onSearch(value.trim());
   }
 
+  function handleClear() {
+    setValue('');
+    onClear?.();
+    inputRef.current?.focus();
+  }
+
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto">
       <div className="relative flex items-center group">
@@ -80,6 +87,18 @@ export default function SearchBar({ onSearch, initialValue = '' }: Props) {
           className="w-full pl-12 pr-32 py-4 text-base bg-white border border-neutral-200 rounded-full shadow-sm focus:outline-none focus:border-neutral-900 focus:shadow-md transition-all duration-200 placeholder:text-neutral-400"
           autoComplete="off"
         />
+        {value && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="absolute right-24 text-neutral-400 hover:text-neutral-700 transition-colors duration-150 p-1"
+            aria-label="Clear search"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        )}
         <button
           type="submit"
           className="absolute right-2 px-5 py-2.5 bg-neutral-900 text-white text-sm font-medium rounded-full hover:bg-neutral-700 transition-colors duration-150"
