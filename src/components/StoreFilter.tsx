@@ -16,7 +16,7 @@ export default function StoreFilter({ selected, onChange }: Props) {
     : STORES;
 
   return (
-    <div className="flex flex-wrap items-center gap-2 justify-center">
+    <div className="flex flex-wrap items-center gap-2">
       {/* Store search input */}
       <div className="relative flex items-center">
         <span className="absolute left-3 text-neutral-400 pointer-events-none">

@@ -15,7 +15,7 @@ const PRICE_OPTIONS = [
 
 export default function PriceFilter({ maxPrice, onChange }: Props) {
   return (
-    <div className="flex flex-wrap gap-2 justify-center">
+    <div className="flex flex-wrap gap-2">
       {PRICE_OPTIONS.map((opt) => (
         <button
           key={opt.value}

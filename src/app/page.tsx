@@ -103,9 +103,17 @@ export default function Home() {
 
         {/* Filters */}
         {(status === 'done' || status === 'loading') && (
-          <section className="pb-8 space-y-3">
-            <StoreFilter selected={storeFilter} onChange={setStoreFilter} />
-            <PriceFilter maxPrice={maxPrice} onChange={setMaxPrice} />
+          <section className="pb-8">
+            <div className="border border-neutral-200 rounded-xl bg-white divide-y divide-neutral-100">
+              <div className="flex items-start gap-4 px-4 py-3">
+                <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400 pt-1.5 w-12 shrink-0">Store</span>
+                <StoreFilter selected={storeFilter} onChange={setStoreFilter} />
+              </div>
+              <div className="flex items-center gap-4 px-4 py-3">
+                <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400 w-12 shrink-0">Price</span>
+                <PriceFilter maxPrice={maxPrice} onChange={setMaxPrice} />
+              </div>
+            </div>
           </section>
         )}
 
