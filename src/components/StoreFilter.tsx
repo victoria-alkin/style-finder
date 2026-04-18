@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { STORES } from '@/lib/stores';
 
 interface Props {
@@ -8,8 +9,41 @@ interface Props {
 }
 
 export default function StoreFilter({ selected, onChange }: Props) {
+  const [storeSearch, setStoreSearch] = useState('');
+
+  const visibleStores = storeSearch.trim()
+    ? STORES.filter((s) => s.name.toLowerCase().includes(storeSearch.toLowerCase()))
+    : STORES;
+
   return (
-    <div className="flex flex-wrap gap-2 justify-center">
+    <div className="flex flex-wrap items-center gap-2 justify-center">
+      {/* Store search input */}
+      <div className="relative flex items-center">
+        <span className="absolute left-3 text-neutral-400 pointer-events-none">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+        </span>
+        <input
+          type="text"
+          value={storeSearch}
+          onChange={(e) => setStoreSearch(e.target.value)}
+          placeholder="Find a store…"
+          className="pl-8 pr-3 py-1.5 text-sm bg-white border border-neutral-200 rounded-full focus:outline-none focus:border-neutral-400 w-36 placeholder:text-neutral-400"
+        />
+        {storeSearch && (
+          <button
+            onClick={() => setStoreSearch('')}
+            className="absolute right-2.5 text-neutral-400 hover:text-neutral-700"
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        )}
+      </div>
+
       <button
         onClick={() => onChange('')}
         className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 ${
@@ -20,7 +54,8 @@ export default function StoreFilter({ selected, onChange }: Props) {
       >
         All Stores
       </button>
-      {STORES.map((store) => (
+
+      {visibleStores.map((store) => (
         <button
           key={store.domain}
           onClick={() => onChange(store.domain)}
@@ -33,6 +68,10 @@ export default function StoreFilter({ selected, onChange }: Props) {
           {store.name}
         </button>
       ))}
+
+      {visibleStores.length === 0 && (
+        <span className="text-sm text-neutral-400">No stores match &ldquo;{storeSearch}&rdquo;</span>
+      )}
     </div>
   );
 }
